@@ -14,7 +14,7 @@ COPY app.py /app/
 RUN pip install --no-cache-dir streamlit
 
 # Streamlit uses port 8501 by default
-EXPOSE 8501
+EXPOSE 8000
 
 # Command to execute the app and bind it to standard container networking parameters
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
