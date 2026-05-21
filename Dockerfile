@@ -1,20 +1,28 @@
 # Use a lightweight official Python image
-FROM python:3.11-slim
+FROM python:3.10-slim
 
-# Install system utilities needed for network ping tools inside Linux containers
-RUN apt-get update && apt-get install -y iputils-ping && rm -rf /var/lib/apt/lists/*
+# Install system dependencies (needed for the ping utility tool)
+RUN apt-get update && apt-get install -y \
+    iputils-ping \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set the active working directory inside the container
-WORKDIR /app
+# Set working directory
+WORKDIR /workspace
 
-# Copy the app script into the container workspace
-COPY app.py /app/
+# Copy and install Python requirements
+# Make sure your requirements.txt contains: fastapi, uvicorn, streamlit
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install the required Python dependencies
-RUN pip install --no-cache-dir streamlit
+# Copy the rest of the application files
+COPY main.py app.py start.sh ./
 
-# Streamlit uses port 8501 by default
+# Make the startup script executable
+RUN chmod +x start.sh
+
+# Expose both the API port and the Streamlit port
 EXPOSE 8000
+EXPOSE 8501
 
-# Command to execute the app and bind it to standard container networking parameters
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Execute the startup script
+CMD ["./start.sh"]
