@@ -1,2 +1,6 @@
-fastapi
-uvicorn
+# Web Framework & Server
+fastapi==0.111.0
+uvicorn==0.30.1
+
+# Interactive Dashboard UI
+streamlit==1.35.0
